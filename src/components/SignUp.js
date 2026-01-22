@@ -37,13 +37,15 @@ function SignUp() {
                     <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path>
                   </svg>
                 </div>
-                <span className="text-2xl font-bold tracking-tight">Webex</span>
+                <span className="text-2xl font-bold tracking-tight">CISCO</span>
               </div>
               <h1 className="text-5xl font-black leading-tight tracking-[-0.033em] mb-4">
-                Join the collaboration.
+                Self Onboarding Made Easy.
               </h1>
               <p className="text-lg opacity-90 max-w-md">
-                Experience the next generation of team connection. Webex Playtime is designed for modern, high-performance teams.
+                A smarter way to connect and learn.
+                Accelerating growth from day one at Cisco.
+                Engineered for teams that lead the future.
               </p>
             </div>
             <div className="flex gap-4">
@@ -87,7 +89,7 @@ function SignUp() {
                 Create your account
               </h2>
               <p className="text-[#616f89] dark:text-gray-400">
-                Get started with your Webex Playtime workspace.
+                Get started with your Cisco learning journey.
               </p>
             </div>
 
