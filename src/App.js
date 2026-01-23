@@ -12,6 +12,8 @@ import Certifications from './components/Certifications';
 import Performance from './components/Performance';
 import TeamResources from './components/TeamResources';
 import TeamOverview from './components/TeamOverview';
+import ForgotPassword from './components/ForgotPassword';
+import SetPassword from './components/SetPassword';
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
           <Route path="teamResources" element={<TeamResources />} />
           <Route path="teamResources/overview" element={<TeamOverview />} />
         </Route>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/set-password" element={<SetPassword />} />
       </Routes>
     </Router>
   );
