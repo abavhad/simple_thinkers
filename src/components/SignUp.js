@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { hasUserSignedUp, createUser, userNeedsPassword, setUserPassword } from '../data/dummyUsers';
+import { useTheme } from '../contexts/ThemeContext';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const { theme, toggleTheme } = useTheme();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -134,7 +136,19 @@ function SignUp() {
         </div>
 
         {/* Right Section: Signup Form */}
-        <div className="flex flex-1 flex-col justify-center bg-white dark:bg-background-dark px-6 py-12 lg:px-24">
+        <div className="flex flex-1 flex-col justify-center bg-white dark:bg-background-dark px-6 py-12 lg:px-24 relative">
+          {/* Theme Toggle Button in Navbar */}
+          <div className="absolute top-6 right-6">
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 hover:border-primary/50 shadow-sm"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              <span className="material-symbols-outlined text-xl">
+                {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
+          </div>
           {/* Mobile Logo */}
           <div className="lg:hidden mb-12 flex items-center gap-3">
             <div className="size-6 text-primary">

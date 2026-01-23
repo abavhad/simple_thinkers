@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateUserOnboarding, getUserByEmail } from '../data/dummyUsers';
+import { useTheme } from '../contexts/ThemeContext';
 
 function OnboardingChat() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ function OnboardingChat() {
   const [priorExperience, setPriorExperience] = useState('');
   const [learningPreference, setLearningPreference] = useState('');
   const [customHobby, setCustomHobby] = useState('');
+  const { theme, toggleTheme } = useTheme();
 
   const hobbyOptions = [
     { id: 'gaming', label: 'Gaming', icon: 'sports_esports' },
@@ -356,9 +358,21 @@ Let's make ${user.name.split(' ')[0]} feel at home! 🏠`;
   };
 
   return (
-    <div className="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display">
+    <div className="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display relative">
       {/* Top Navigation Bar */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6 md:px-10 py-3 sticky top-0 z-50">
+        {/* Theme Toggle Button in Navbar */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={toggleTheme}
+            className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 hover:border-primary/50 shadow-sm"
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            <span className="material-symbols-outlined text-xl">
+              {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+            </span>
+          </button>
+        </div>
         <div className="flex items-center gap-3 text-primary">
           <div className="size-8">
             <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">

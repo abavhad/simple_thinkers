@@ -31,7 +31,14 @@ function TeamResources() {
               </div>
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 flex-grow">Primary technical channel for MERN stack engineering discussions, troubleshooting, and best practices.</p>
-            <button className="w-full py-2.5 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide">Join Space</button>
+            <button
+              onClick={() => {
+                window.location.href = 'webexteams://im?space=04a13290-f131-11f0-8a93-115d033c514a';
+              }}
+              className="w-full py-2.5 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide"
+            >
+              Join Space
+            </button>
           </div>
 
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col h-full hover:border-primary/30 transition-colors">

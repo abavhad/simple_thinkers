@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout } from '../utils/userUtils';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Chat() {
   const navigate = useNavigate();
   const user = getCurrentUser();
+  const { theme, toggleTheme } = useTheme();
   const [showWebexMessage, setShowWebexMessage] = useState(false);
   const [introMessage, setIntroMessage] = useState('');
 
@@ -57,6 +59,18 @@ function Chat() {
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Theme Toggle Button in Navbar */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 hover:border-primary/50 shadow-sm"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              <span className="material-symbols-outlined text-xl">
+                {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
+          </div>
           <div className="flex items-center gap-3">
             <div className="size-8">
               <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">

@@ -126,6 +126,20 @@
         .dark .connector-v {
             background: #334155;
         }
+        .immersive-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+        .immersive-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .text-overlay-gradient {
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+        }
+        .sidebar-icon {
+            font-variation-settings: 'wght' 300;
+        }
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }

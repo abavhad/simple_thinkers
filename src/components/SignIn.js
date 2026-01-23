@@ -1,12 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { authenticateUser } from '../data/dummyUsers';
+import { useTheme } from '../contexts/ThemeContext';
 
 function SignIn() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { theme, toggleTheme } = useTheme();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -79,7 +81,19 @@ function SignIn() {
         </div>
 
         {/* Right Side: Auth Panel */}
-        <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-20 bg-white dark:bg-background-dark">
+        <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-20 bg-white dark:bg-background-dark relative">
+          {/* Theme Toggle Button in Navbar */}
+          <div className="absolute top-6 right-6">
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors border border-slate-200 dark:border-slate-700 hover:border-primary/50 shadow-sm"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              <span className="material-symbols-outlined text-xl">
+                {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
+          </div>
           <div className="w-full max-w-[440px] flex flex-col gap-8">
             {/* Brand Header */}
             <header className="flex flex-col items-start gap-6">

@@ -1,11 +1,17 @@
 import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getCurrentUser, logout } from '../utils/userUtils';
+import { useTheme } from '../contexts/ThemeContext';
+import MeetingRequestModal from './MeetingRequestModal';
+import CircuitAIChat from './CircuitAIChat';
 
 function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const user = getCurrentUser();
+  const { theme, toggleTheme } = useTheme();
+  const [showMeetingModal, setShowMeetingModal] = useState(false);
+  const [showCircuitAI, setShowCircuitAI] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -96,6 +102,17 @@ function DashboardLayout() {
               <span className={`material-symbols-outlined text-[20px] ${isActive('/dashboard/teamResources') ? 'fill-icon' : ''}`}>groups</span>
               <span className="text-sm">Team Resources</span>
             </Link>
+            <Link
+              to="/dashboard/campus"
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-all ${
+                isActive('/dashboard/campus')
+                  ? 'bg-primary/5 text-primary font-semibold border-l-4 border-primary rounded-l-none'
+                  : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
+              }`}
+            >
+              <span className={`material-symbols-outlined text-[20px] ${isActive('/dashboard/campus') ? 'fill-icon' : ''}`}>location_on</span>
+              <span className="text-sm">Campus Overview</span>
+            </Link>
           </nav>
           <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800">
             <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
@@ -118,10 +135,10 @@ function DashboardLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-[#FBFDFF] dark:bg-slate-950">
+      <main className="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-slate-950">
         {/* Top Header */}
-        <header className={`sticky top-0 z-20 border-b border-slate-200 dark:border-slate-800 px-10 py-5 flex items-center justify-between ${
-          location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources')
+        <header className={`sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 px-10 py-5 flex items-center justify-between ${
+          location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus'
             ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md' 
             : 'bg-white dark:bg-slate-900'
         }`}>
@@ -145,6 +162,16 @@ function DashboardLayout() {
                   <div className="bg-gradient-to-r from-primary to-secondary h-full rounded-full transition-all duration-1000" style={{ width: '68%' }}></div>
                 </div>
               </div>
+            ) : location.pathname === '/dashboard/campus' ? (
+              <div>
+                <div className="flex items-center gap-4 mb-2">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Your Progress</span>
+                  <span className="text-sm font-black text-primary">68%</span>
+                </div>
+                <div className="w-56 bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className="bg-primary h-full rounded-full" style={{ width: '68%' }}></div>
+                </div>
+              </div>
             ) : location.pathname.startsWith('/dashboard/teamResources') ? (
               <div className="flex items-center gap-4">
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Team Space</span>
@@ -157,11 +184,21 @@ function DashboardLayout() {
                  location.pathname === '/dashboard/certifications' ? 'Certifications' :
                  location.pathname === '/dashboard/performance' ? 'Performance Tracking' :
                  location.pathname === '/dashboard/teamResources' ? 'Team Resources' :
+                 location.pathname === '/dashboard/campus' ? 'Campus Overview' :
                  'Dashboard'}
               </h2>
             )}
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              <span className="material-symbols-outlined">
+                {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
             <div className="relative">
               <button className={`p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 relative transition-colors ${
                 location.pathname === '/dashboard/moduleLibrary' ? '' : ''
@@ -192,10 +229,85 @@ function DashboardLayout() {
 
       {/* Right Sidebar */}
       <aside className={`w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto hidden xl:flex flex-col shrink-0 ${
-        location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') ? 'shadow-[-4px_0_12px_rgba(0,0,0,0.02)]' : ''
+        location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus' ? 'shadow-[-4px_0_12px_rgba(0,0,0,0.02)]' : ''
       }`}>
-        <div className={`${location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') ? 'p-8 space-y-10' : 'p-8 space-y-10'}`}>
-          {location.pathname.startsWith('/dashboard/teamResources') ? (
+        <div className={`${location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus' ? 'p-8 space-y-12' : 'p-8 space-y-10'}`}>
+          {location.pathname === '/dashboard/campus' ? (
+            <>
+              {/* Campus AI Assistant */}
+              <div>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Campus AI Assistant</h3>
+                <div className="p-6 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="size-12 rounded-xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white">
+                      <span className="material-symbols-outlined text-2xl fill-icon">smart_toy</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-slate-900 dark:text-white leading-tight">Nexus Bot</p>
+                      <p className="text-[11px] text-slate-400 font-bold mt-0.5">Campus Guide</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setShowCircuitAI(true)}
+                    className="w-full py-3 bg-primary text-white text-[11px] font-black rounded-xl hover:bg-primary/90 transition-all shadow-md active:scale-95 uppercase tracking-widest"
+                  >
+                    Ask a Question
+                  </button>
+                  <p className="text-[11px] text-center text-slate-400 mt-4 font-medium italic">"Show me today's vegetarian specials"</p>
+                </div>
+              </div>
+
+              {/* Quick Services */}
+              <div>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Quick Services</h3>
+                <div className="space-y-3">
+                  <a className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex gap-4 items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-all hover:border-primary/20 group" href="#">
+                    <div className="size-9 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-500 group-hover:text-primary flex items-center justify-center shrink-0 transition-colors">
+                      <span className="material-symbols-outlined text-xl">map</span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Interactive Map</span>
+                  </a>
+                  <a className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex gap-4 items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-all hover:border-primary/20 group" href="#">
+                    <div className="size-9 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-500 group-hover:text-primary flex items-center justify-center shrink-0 transition-colors">
+                      <span className="material-symbols-outlined text-xl">support_agent</span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">IT Concierge</span>
+                  </a>
+                  <a className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex gap-4 items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-all hover:border-primary/20 group" href="#">
+                    <div className="size-9 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-500 group-hover:text-primary flex items-center justify-center shrink-0 transition-colors">
+                      <span className="material-symbols-outlined text-xl">meeting_room</span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Room Reservation</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Security & Alerts */}
+              <div>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Security & Alerts</h3>
+                <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[11px] before:w-px before:bg-slate-100 dark:before:bg-slate-800">
+                  <div className="flex gap-4 relative">
+                    <div className="size-6 rounded-full bg-white dark:bg-slate-900 border-2 border-primary z-10 flex items-center justify-center">
+                      <span className="size-2 bg-primary rounded-full animate-pulse"></span>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-slate-900 dark:text-white font-bold">Shuttle Route A <span className="text-amber-500">Delay</span></p>
+                      <p className="text-[10px] text-slate-400 font-medium">12 mins ago</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4 relative">
+                    <div className="size-6 rounded-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 z-10 flex items-center justify-center">
+                      <span className="size-2 bg-slate-300 dark:bg-slate-600 rounded-full"></span>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-slate-900 dark:text-white font-bold">Wi-Fi Maintenance (BGL 16)</p>
+                      <p className="text-[10px] text-slate-400 font-medium">Scheduled for 14:00</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : location.pathname.startsWith('/dashboard/teamResources') ? (
             <>
               {/* Current Sprint Stats */}
               <div>
@@ -285,7 +397,12 @@ function DashboardLayout() {
                       <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-tight">Sr. Technical Lead</p>
                     </div>
                   </div>
-                  <button className="w-full py-3 bg-primary text-white text-xs font-black rounded-xl hover:bg-primary-dark shadow-lg shadow-primary/20 transition-all uppercase tracking-widest">Request 1:1</button>
+                  <button 
+                    onClick={() => setShowMeetingModal(true)}
+                    className="w-full py-3 bg-primary text-white text-xs font-black rounded-xl hover:bg-primary-dark shadow-lg shadow-primary/20 transition-all uppercase tracking-widest"
+                  >
+                    Request 1:1
+                  </button>
                   <p className="text-[10px] text-center text-slate-400 mt-4 font-bold italic">Next: Today, 4:00 PM</p>
                 </div>
               </div>
@@ -428,7 +545,12 @@ function DashboardLayout() {
                       <p className="text-[11px] text-slate-500">Sr. Technical Lead</p>
                     </div>
                   </div>
-                  <button className="w-full py-2 bg-primary text-white text-xs font-bold rounded hover:bg-primary/90 transition-colors">Schedule 1:1 Session</button>
+                  <button 
+                    onClick={() => setShowMeetingModal(true)}
+                    className="w-full py-2 bg-primary text-white text-xs font-bold rounded hover:bg-primary/90 transition-colors"
+                  >
+                    Schedule 1:1 Session
+                  </button>
                   <p className="text-[10px] text-center text-slate-400 mt-3 italic">Next available: Today, 4:00 PM</p>
                 </div>
               </div>
@@ -482,6 +604,18 @@ function DashboardLayout() {
           )}
         </div>
       </aside>
+
+      {/* Meeting Request Modal */}
+      <MeetingRequestModal 
+        isOpen={showMeetingModal} 
+        onClose={() => setShowMeetingModal(false)} 
+      />
+
+      {/* Circuit AI Chat */}
+      <CircuitAIChat 
+        isOpen={showCircuitAI} 
+        onClose={() => setShowCircuitAI(false)} 
+      />
     </div>
   );
 }
