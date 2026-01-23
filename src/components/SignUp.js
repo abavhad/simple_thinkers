@@ -1,10 +1,72 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { hasUserSignedUp, createUser, userNeedsPassword, setUserPassword } from '../data/dummyUsers';
 
 function SignUp() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Sign up form submitted');
+    setError('');
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    // Check if user exists with password set - redirect to sign in
+    if (hasUserSignedUp(email)) {
+      setError('This email is already registered. Redirecting to sign in...');
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
+      return;
+    }
+
+    // Check if user exists with null password (from initialDummyUsers) - allow signup
+    if (userNeedsPassword(email)) {
+      // Set password for existing user - this will set hasSignedUp = true and write to localStorage
+      const updatedUser = setUserPassword(email, password);
+      
+      if (updatedUser) {
+        console.log('✅ User password set successfully:', updatedUser);
+        console.log('✅ User data in localStorage:', localStorage.getItem('allUsers'));
+        
+        // Store user and redirect to onboarding
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('pendingOnboarding', 'true');
+        
+        // Redirect to onboarding
+        navigate('/onboarding');
+        return;
+      } else {
+        console.error('❌ Failed to set password for:', email);
+        setError('Failed to set password. Please try again.');
+        return;
+      }
+    }
+
+    // Create new user (doesn't exist in initialDummyUsers)
+    const newUser = createUser(email, password);
+    
+    if (!newUser) {
+      setError('Failed to create account. Please try again.');
+      return;
+    }
+
+    // Store user and redirect to onboarding
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('pendingOnboarding', 'true');
+    
+    // Redirect to onboarding, then it will go to chat
+    navigate('/onboarding');
   };
 
   const togglePasswordVisibility = (e) => {
@@ -92,6 +154,13 @@ function SignUp() {
             </div>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+
               {/* Email Field */}
               <div className="flex flex-col gap-2">
                 <label className="text-[#111318] dark:text-gray-200 text-sm font-medium leading-normal">
@@ -101,6 +170,8 @@ function SignUp() {
                   className="form-input flex w-full rounded-lg text-[#111318] dark:text-white border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-12 placeholder:text-[#616f89] px-4 text-base focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" 
                   placeholder="name@company.com" 
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -115,6 +186,8 @@ function SignUp() {
                     className="form-input flex w-full rounded-lg text-[#111318] dark:text-white border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-12 placeholder:text-[#616f89] px-4 text-base focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" 
                     placeholder="At least 8 characters" 
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength="8"
                   />
@@ -151,6 +224,8 @@ function SignUp() {
                     className="form-input flex w-full rounded-lg text-[#111318] dark:text-white border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-12 placeholder:text-[#616f89] px-4 text-base focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" 
                     placeholder="Confirm your password" 
                     type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                   />
                 </div>

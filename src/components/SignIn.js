@@ -1,10 +1,40 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { authenticateUser } from '../data/dummyUsers';
 
 function SignIn() {
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Sign in form submitted');
+    setError('');
+    
+    // Authenticate user
+    const user = authenticateUser(email, password);
+    
+    if (!user) {
+      setError('Invalid email or password. Please try again.');
+      return;
+    }
+    
+    // Store user data in localStorage
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('isAuthenticated', 'true');
+    
+    console.log('User signed in:', user);
+    
+    // Check if onboarding is completed
+    const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+    if (!onboardingCompleted) {
+      // First login - redirect to onboarding
+      navigate('/onboarding');
+    } else {
+      // Already onboarded - redirect to module library
+      navigate('/dashboard/moduleLibrary');
+    }
   };
 
   const togglePasswordVisibility = (e) => {
@@ -64,6 +94,13 @@ function SignIn() {
 
             {/* Form Section */}
             <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+
               {/* Email Field */}
               <div className="flex flex-col gap-2">
                 <label className="text-[#111318] dark:text-white text-sm font-semibold leading-normal">
@@ -73,6 +110,8 @@ function SignIn() {
                   className="form-input flex w-full rounded-lg text-[#111318] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-12 placeholder:text-[#616f89] px-4 text-base font-normal" 
                   placeholder="name@company.com" 
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -92,6 +131,8 @@ function SignIn() {
                     className="form-input flex w-full rounded-lg text-[#111318] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-12 placeholder:text-[#616f89] px-4 text-base font-normal pr-12" 
                     placeholder="Enter your password" 
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                   <div 
@@ -111,6 +152,14 @@ function SignIn() {
                 Sign In
               </button>
             </form>
+
+            {/* Demo Credentials Hint */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-xs text-blue-700 dark:text-blue-300">
+              <p className="font-semibold mb-2">Demo Credentials:</p>
+              <p>Email: alex.johnson@cisco.com</p>
+              <p>Password: password123</p>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">(5 dummy users available - check dummyUsers.js)</p>
+            </div>
 
             {/* Social Login Separator */}
             <div className="flex items-center gap-4 my-2">
