@@ -13,6 +13,8 @@ import Certifications from './components/Certifications';
 import Performance from './components/Performance';
 import TeamResources from './components/TeamResources';
 import TeamOverview from './components/TeamOverview';
+import ForgotPassword from './components/ForgotPassword';
+import SetPassword from './components/SetPassword';
 import CampusOverview from './components/CampusOverview';
 
 function App() {
@@ -35,7 +37,9 @@ function App() {
             <Route path="teamResources/overview" element={<TeamOverview />} />
             <Route path="campus" element={<CampusOverview />} />
           </Route>
-        </Routes>
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/set-password" element={<SetPassword />} />
+      </Routes>
       </Router>
     </ThemeProvider>
   );

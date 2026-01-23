@@ -145,9 +145,9 @@ function SignIn() {
                   <label className="text-[#111318] dark:text-white text-sm font-semibold leading-normal">
                     Password
                   </label>
-                  <a className="text-primary text-sm font-medium hover:underline" href="#">
+                  <Link className="text-primary text-sm font-medium hover:underline" to="/forgot-password">
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative flex w-full items-stretch">
                   <input 
