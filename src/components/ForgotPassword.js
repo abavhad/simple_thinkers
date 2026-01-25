@@ -50,7 +50,7 @@ function ForgotPassword() {
                   <path d="M12 18L6 12L12 6L18 12L12 18Z" fill="white"></path>
                 </svg>
               </div>
-              <h1 className="text-slate-900 dark:text-slate-100 font-semibold text-lg">Cisco Onboarding Hub</h1>
+              <h1 className="text-slate-900 dark:text-slate-100 font-semibold text-lg">Cisco Self Onboarding Hub</h1>
             </div>
 
             <div className="space-y-6">

@@ -28,15 +28,8 @@ function SignIn() {
     
     console.log('User signed in:', user);
     
-    // Check if onboarding is completed
-    const onboardingCompleted = localStorage.getItem('onboardingCompleted');
-    if (!onboardingCompleted) {
-      // First login - redirect to onboarding
-      navigate('/onboarding');
-    } else {
-      // Already onboarded - redirect to module library
-      navigate('/dashboard/moduleLibrary');
-    }
+    // Redirect to module library
+    navigate('/dashboard/moduleLibrary');
   };
 
   const togglePasswordVisibility = (e) => {
@@ -70,10 +63,10 @@ function SignIn() {
               />
               <div>
                 <h1 className="text-3xl font-serif font-semibold leading-snug mb-3 text-[#0f172a]">
-                  Welcome To Cisco.
+                  Welcome to Cisco
                 </h1>
                 <p className="text-base text-[#475569]">
-                  Experience a more engaging way to connect and work together seamlessly.
+                  Your launchpad for a smooth start and meaningful collaboration.
                 </p>
               </div>
             </div>
@@ -103,7 +96,7 @@ function SignIn() {
                     <path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold tracking-tight text-[#111318] dark:text-white">Cisco Onboarding Hub</h2>
+                <h2 className="text-2xl font-bold tracking-tight text-[#111318] dark:text-white">Cisco Self Onboarding Hub</h2>
               </div>
               <div className="flex flex-col gap-2">
                 <h1 className="text-[#111318] dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">

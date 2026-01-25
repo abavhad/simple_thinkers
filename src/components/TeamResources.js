@@ -33,7 +33,7 @@ function TeamResources() {
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 flex-grow">Primary technical channel for MERN stack engineering discussions, troubleshooting, and best practices.</p>
             <button
               onClick={() => {
-                window.location.href = 'webexteams://im?space=04a13290-f131-11f0-8a93-115d033c514a';
+                window.location.href = 'webexteams://im?space=c5662510-f83b-11f0-b457-8d96be1becbc';
               }}
               className="w-full py-2.5 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors uppercase tracking-wide"
             >
@@ -102,7 +102,14 @@ function TeamResources() {
                     <span className="text-xs font-bold uppercase">Granted</span>
                   </div>
                 </div>
-                <button className="px-6 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors min-w-[120px]">Open Tool</button>
+                <a 
+                  href="https://ciscowebex.servicenowservices.com/sp?id=sc_cat_item&sys_id=e4306f071bd0c5d09aef6248b04bcbef"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors min-w-[120px] text-center inline-block"
+                >
+                  Open Tool
+                </a>
               </div>
             </div>
 
@@ -151,7 +158,14 @@ function TeamResources() {
                     <span className="text-xs font-bold uppercase">Not Requested</span>
                   </div>
                 </div>
-                <button className="px-6 py-2 border border-primary text-primary text-xs font-bold rounded-lg hover:bg-primary/5 transition-colors min-w-[120px]">Request Access</button>
+                <a 
+                  href="https://ciscowebex.servicenowservices.com/sp?id=sc_cat_item&sys_id=e4306f071bd0c5d09aef6248b04bcbef"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-2 border border-primary text-primary text-xs font-bold rounded-lg hover:bg-primary/5 transition-colors min-w-[120px] text-center inline-block"
+                >
+                  Request Access
+                </a>
               </div>
             </div>
 
@@ -177,7 +191,14 @@ function TeamResources() {
                     <span className="text-xs font-bold uppercase">Granted</span>
                   </div>
                 </div>
-                <button className="px-6 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors min-w-[120px]">Open Tool</button>
+                <a 
+                  href="https://ciscowebex.servicenowservices.com/sp?id=sc_cat_item&sys_id=e4306f071bd0c5d09aef6248b04bcbef"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 transition-colors min-w-[120px] text-center inline-block"
+                >
+                  Open Tool
+                </a>
               </div>
             </div>
 
@@ -202,7 +223,14 @@ function TeamResources() {
                     <span className="text-xs font-bold uppercase">Not Requested</span>
                   </div>
                 </div>
-                <button className="px-6 py-2 border border-primary text-primary text-xs font-bold rounded-lg hover:bg-primary/5 transition-colors min-w-[120px]">Request Access</button>
+                <a 
+                  href="https://ciscowebex.servicenowservices.com/sp?id=sc_cat_item&sys_id=e4306f071bd0c5d09aef6248b04bcbef"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-2 border border-primary text-primary text-xs font-bold rounded-lg hover:bg-primary/5 transition-colors min-w-[120px] text-center inline-block"
+                >
+                  Request Access
+                </a>
               </div>
             </div>
           </div>

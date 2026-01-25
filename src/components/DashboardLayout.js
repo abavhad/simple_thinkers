@@ -42,8 +42,8 @@ function DashboardLayout() {
               <span className="material-symbols-outlined text-xl">account_tree</span>
             </div>
             <div>
-              <h1 className="text-slate-900 dark:text-white text-lg font-bold leading-none tracking-tight uppercase">Webex</h1>
-              <p className="text-slate-400 text-[10px] mt-1 uppercase tracking-widest font-semibold">Development Portal</p>
+              <h1 className="text-slate-900 dark:text-white text-lg font-bold leading-none tracking-tight uppercase">Cisco</h1>
+              <p className="text-slate-400 text-[10px] mt-1 uppercase tracking-widest font-semibold">Self Onboarding Portal</p>
             </div>
           </div>
           <nav className="flex flex-col gap-1 flex-grow">
@@ -78,18 +78,7 @@ function DashboardLayout() {
               }`}
             >
               <span className={`material-symbols-outlined text-[20px] ${isActive('/dashboard/certifications') ? 'fill-icon' : ''}`}>assignment_turned_in</span>
-              <span className="text-sm">Certifications</span>
-            </Link>
-            <Link
-              to="/dashboard/performance"
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-all ${
-                isActive('/dashboard/performance')
-                  ? 'bg-primary/5 text-primary font-semibold border-l-4 border-primary rounded-l-none'
-                  : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
-              }`}
-            >
-              <span className={`material-symbols-outlined text-[20px] ${isActive('/dashboard/performance') ? 'fill-icon' : ''}`}>analytics</span>
-              <span className="text-sm">Performance</span>
+              <span className="text-sm">Growth</span>
             </Link>
             <Link
               to="/dashboard/teamResources"
@@ -112,6 +101,17 @@ function DashboardLayout() {
             >
               <span className={`material-symbols-outlined text-[20px] ${isActive('/dashboard/campus') ? 'fill-icon' : ''}`}>location_on</span>
               <span className="text-sm">Campus Overview</span>
+            </Link>
+            <Link
+              to="/dashboard/hr-connect"
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-all ${
+                isActive('/dashboard/hr-connect')
+                  ? 'bg-primary/5 text-primary font-semibold border-l-4 border-primary rounded-l-none'
+                  : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
+              }`}
+            >
+              <span className={`material-symbols-outlined text-[20px] ${isActive('/dashboard/hr-connect') ? 'fill-icon' : ''}`}>policy</span>
+              <span className="text-sm">HR Connect</span>
             </Link>
           </nav>
           <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800">
@@ -138,7 +138,7 @@ function DashboardLayout() {
       <main className="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-slate-950">
         {/* Top Header */}
         <header className={`sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 px-10 py-5 flex items-center justify-between ${
-          location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus'
+          location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus' || location.pathname === '/dashboard/hr-connect'
             ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md' 
             : 'bg-white dark:bg-slate-900'
         }`}>
@@ -148,7 +148,7 @@ function DashboardLayout() {
                 <span className="material-symbols-outlined text-slate-400">search</span>
                 <input 
                   className="bg-transparent border-none text-sm focus:ring-0 w-64 text-slate-600" 
-                  placeholder="Search certifications..." 
+                  placeholder="Search certifications & progress..." 
                   type="text"
                 />
               </div>
@@ -172,6 +172,15 @@ function DashboardLayout() {
                   <div className="bg-primary h-full rounded-full" style={{ width: '68%' }}></div>
                 </div>
               </div>
+            ) : location.pathname === '/dashboard/hr-connect' ? (
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-slate-400">search</span>
+                <input
+                  className="bg-transparent border-none text-sm focus:ring-0 w-64 text-slate-600 dark:text-slate-300 placeholder:text-slate-500"
+                  placeholder="Search policies..."
+                  type="text"
+                />
+              </div>
             ) : location.pathname.startsWith('/dashboard/teamResources') ? (
               <div className="flex items-center gap-4">
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Team Space</span>
@@ -181,8 +190,7 @@ function DashboardLayout() {
             ) : (
               <h2 className="text-xl font-bold text-slate-800 dark:text-white">
                 {location.pathname === '/dashboard/overview' ? 'Dashboard Overview' : 
-                 location.pathname === '/dashboard/certifications' ? 'Certifications' :
-                 location.pathname === '/dashboard/performance' ? 'Performance Tracking' :
+                 location.pathname === '/dashboard/certifications' ? 'Growth & Progress' :
                  location.pathname === '/dashboard/teamResources' ? 'Team Resources' :
                  location.pathname === '/dashboard/campus' ? 'Campus Overview' :
                  'Dashboard'}
@@ -228,11 +236,12 @@ function DashboardLayout() {
       </main>
 
       {/* Right Sidebar */}
-      <aside className={`w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto hidden xl:flex flex-col shrink-0 ${
-        location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus' ? 'shadow-[-4px_0_12px_rgba(0,0,0,0.02)]' : ''
-      }`}>
-        <div className={`${location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus' ? 'p-8 space-y-12' : 'p-8 space-y-10'}`}>
-          {location.pathname === '/dashboard/campus' ? (
+      {location.pathname !== '/dashboard/hr-connect' && (
+        <aside className={`w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto hidden xl:flex flex-col shrink-0 ${
+          location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus' ? 'shadow-[-4px_0_12px_rgba(0,0,0,0.02)]' : ''
+        }`}>
+          <div className={`${location.pathname === '/dashboard/moduleLibrary' || location.pathname.startsWith('/dashboard/teamResources') || location.pathname === '/dashboard/campus' ? 'p-8 space-y-12' : 'p-8 space-y-10'}`}>
+            {location.pathname === '/dashboard/campus' ? (
             <>
               {/* Campus AI Assistant */}
               <div>
@@ -359,18 +368,31 @@ function DashboardLayout() {
               <div>
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Quick Links</h3>
                 <div className="grid grid-cols-1 gap-2">
-                  <button className="flex items-center gap-3 w-full px-4 py-3 rounded-lg border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-colors">
+                  <a 
+                    href="https://developer.webex.com/docs" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 w-full px-4 py-3 rounded-lg border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  >
                     <span className="material-symbols-outlined text-lg">description</span>
                     <span className="text-[11px] font-black uppercase">Technical Docs</span>
-                  </button>
-                  <button className="flex items-center gap-3 w-full px-4 py-3 rounded-lg border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-colors">
+                  </a>
+                  <a 
+                    href="https://developer.webex.com/docs/api/getting-started" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 w-full px-4 py-3 rounded-lg border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  >
                     <span className="material-symbols-outlined text-lg">terminal</span>
                     <span className="text-[11px] font-black uppercase">API Playground</span>
-                  </button>
-                  <button className="flex items-center gap-3 w-full px-4 py-3 rounded-lg border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-colors">
+                  </a>
+                  <a 
+                    href="https://webexteams://im?space=c5662510-f83b-11f0-b457-8d96be1becbc" 
+                    className="flex items-center gap-3 w-full px-4 py-3 rounded-lg border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  >
                     <span className="material-symbols-outlined text-lg">forum</span>
                     <span className="text-[11px] font-black uppercase">Support Slack</span>
-                  </button>
+                  </a>
                 </div>
               </div>
             </>
@@ -602,8 +624,9 @@ function DashboardLayout() {
               </div>
             </>
           )}
-        </div>
-      </aside>
+          </div>
+        </aside>
+      )}
 
       {/* Meeting Request Modal */}
       <MeetingRequestModal 

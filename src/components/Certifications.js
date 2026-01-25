@@ -10,9 +10,44 @@ function Certifications() {
   return (
     <div className="p-10 max-w-6xl mx-auto">
       <div className="mb-10">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Webex Playtime Certifications</h2>
-        <p className="text-slate-500 text-sm">Manage your professional credentials and discover new specialized learning paths.</p>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Growth & Progress</h2>
+        <p className="text-slate-500 text-sm">Track your early-stage progress and explore certifications when you’re ready.</p>
       </div>
+
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">New Joiner Progress</h3>
+          <span className="text-[11px] font-bold text-slate-400">STARTER VIEW</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Learning Velocity</h4>
+              <span className="text-[11px] text-emerald-600 font-bold">+12%</span>
+            </div>
+            <p className="text-2xl font-black text-slate-900 dark:text-white">4.2 hrs</p>
+            <p className="text-[11px] text-slate-500 mt-2">Average weekly focus time</p>
+          </div>
+
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Feedback Loop</h4>
+              <span className="text-[11px] text-primary font-bold">Active</span>
+            </div>
+            <p className="text-2xl font-black text-slate-900 dark:text-white">2 notes</p>
+            <p className="text-[11px] text-slate-500 mt-2">Recent mentor feedback items</p>
+          </div>
+
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Quarter Goals</h4>
+              <span className="text-[11px] text-slate-400 font-bold">In Progress</span>
+            </div>
+            <p className="text-2xl font-black text-slate-900 dark:text-white">1 / 3</p>
+            <p className="text-[11px] text-slate-500 mt-2">Goals completed this quarter</p>
+          </div>
+        </div>
+      </section>
 
       <section className="mb-14">
         <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">

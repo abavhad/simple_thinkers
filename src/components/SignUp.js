@@ -42,10 +42,8 @@ function SignUp() {
         // Store user and redirect to onboarding
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
         localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('pendingOnboarding', 'true');
-        
-        // Redirect to onboarding
-        navigate('/onboarding');
+        localStorage.setItem('onboardingCompleted', 'true');
+        navigate('/dashboard/moduleLibrary');
         return;
       } else {
         console.error('❌ Failed to set password for:', email);
@@ -62,13 +60,11 @@ function SignUp() {
       return;
     }
 
-    // Store user and redirect to onboarding
+    // Store user and redirect to dashboard
     localStorage.setItem('currentUser', JSON.stringify(newUser));
     localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('pendingOnboarding', 'true');
-    
-    // Redirect to onboarding, then it will go to chat
-    navigate('/onboarding');
+    localStorage.setItem('onboardingCompleted', 'true');
+    navigate('/dashboard/moduleLibrary');
   };
 
   const togglePasswordVisibility = (e) => {
