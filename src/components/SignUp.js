@@ -43,7 +43,7 @@ function SignUp() {
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('onboardingCompleted', 'true');
-        navigate('/dashboard/moduleLibrary');
+        navigate('/dashboard/overview');
         return;
       } else {
         console.error('❌ Failed to set password for:', email);
@@ -64,7 +64,7 @@ function SignUp() {
     localStorage.setItem('currentUser', JSON.stringify(newUser));
     localStorage.setItem('isAuthenticated', 'true');
     localStorage.setItem('onboardingCompleted', 'true');
-    navigate('/dashboard/moduleLibrary');
+    navigate('/dashboard/overview');
   };
 
   const togglePasswordVisibility = (e) => {

@@ -29,7 +29,7 @@ function SignIn() {
     console.log('User signed in:', user);
     
     // Redirect to module library
-    navigate('/dashboard/moduleLibrary');
+    navigate('/dashboard/overview'); 
   };
 
   const togglePasswordVisibility = (e) => {

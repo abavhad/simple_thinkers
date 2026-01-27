@@ -11,7 +11,7 @@ function MeetingRequestModal({ isOpen, onClose }) {
 
   const handleBackToDashboard = () => {
     onClose();
-    navigate('/dashboard/moduleLibrary');
+    navigate('/dashboard/overview');
   };
 
   const handleAddToCalendar = () => {
