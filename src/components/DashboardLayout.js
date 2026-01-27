@@ -270,7 +270,13 @@ function DashboardLayout() {
               <div>
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Quick Services</h3>
                 <div className="space-y-3">
-                  <a className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex gap-4 items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-all hover:border-primary/20 group" href="#">
+                  <a
+                    className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex gap-4 items-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-all hover:border-primary/20 group"
+                    href="https://maps.app.goo.gl/737Up1S4J1VbrWbU9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Open Interactive Map in new tab"
+                  >
                     <div className="size-9 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-500 group-hover:text-primary flex items-center justify-center shrink-0 transition-colors">
                       <span className="material-symbols-outlined text-xl">map</span>
                     </div>
