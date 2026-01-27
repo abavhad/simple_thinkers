@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { getCurrentUser } from '../utils/userUtils';
+import CodebaseArchitecture from './CodebaseArchitecture';
 
 function ModuleView() {
   const navigate = useNavigate();
@@ -296,8 +297,67 @@ function ModuleView() {
         }
       ],
       deepDiveNote: 'Download the MERN Stack Guide for comprehensive documentation, code examples, and architectural patterns used in our codebase.'
+    },
+    'codebase-architecture': {
+      title: 'Codebase Architecture',
+      progress: 0,
+      videoThumbnail: '',
+      currentSession: '01. Repository Structure',
+      timeProgress: '0:00 / 55:00',
+      resources: [
+        { name: 'Architecture_Guide.pdf', size: '3.2 MB', type: 'PDF', icon: 'picture_as_pdf', color: 'red' },
+        { name: 'Component_Structure.md', size: '0.5 MB', type: 'MD', icon: 'description', color: 'blue' }
+      ],
+      transcript: [
+        {
+          part: '01',
+          label: 'Part 01: Repository Overview',
+          title: 'Understanding the Structure',
+          content: [
+            'Welcome to the Codebase Architecture module. In this section, you\'ll explore the interactive folder structure diagram to understand how our codebase is organized.',
+            'Our repository follows a modular structure with clear separation of concerns. The main directories include:',
+            '• src/components: All React components',
+            '• src/contexts: Global state management',
+            '• src/utils: Reusable utility functions',
+            '• src/data: Data models and constants'
+          ],
+          highlight: true
+        },
+        {
+          part: '02',
+          label: 'Part 02: Component Organization',
+          title: 'Component Architecture',
+          content: [
+            'Components are organized by feature and functionality. Each component is self-contained with its own logic, styles, and dependencies.',
+            'Key principles:',
+            '• Single Responsibility: Each component has one clear purpose',
+            '• Reusability: Components are designed to be reused across the application',
+            '• Composition: Complex UIs are built by composing smaller components'
+          ],
+          highlight: false
+        },
+        {
+          part: '03',
+          label: 'Part 03: File Naming Conventions',
+          title: 'Naming Standards',
+          content: [
+            'We follow consistent naming conventions:',
+            '• Components: PascalCase (e.g., DashboardLayout.js)',
+            '• Utilities: camelCase (e.g., userUtils.js)',
+            '• Constants: UPPER_SNAKE_CASE',
+            '• Files match their default export name'
+          ],
+          highlight: false
+        }
+      ],
+      deepDiveNote: 'Use the interactive folder structure diagram below to explore the codebase. Click on folders to expand and see their contents.'
     }
   };
+
+  // Special handling for codebase-architecture - render custom component
+  if (moduleId === 'codebase-architecture') {
+    return <CodebaseArchitecture />;
+  }
 
   const module = moduleData[moduleId] || moduleData['organization-overview'];
 

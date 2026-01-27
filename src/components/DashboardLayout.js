@@ -12,12 +12,25 @@ function DashboardLayout() {
   const { theme, toggleTheme } = useTheme();
   const [showMeetingModal, setShowMeetingModal] = useState(false);
   const [showCircuitAI, setShowCircuitAI] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [activeTab, setActiveTab] = useState('notifications'); // 'notifications' or 'calendar'
 
   useEffect(() => {
     if (!user) {
       navigate('/');
     }
   }, [user, navigate]);
+
+  // Close notifications dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showNotifications && !event.target.closest('.notification-dropdown-container')) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotifications]);
 
   if (!user) {
     return null;
@@ -207,13 +220,197 @@ function DashboardLayout() {
                 {theme === 'dark' ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
-            <div className="relative">
-              <button className={`p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 relative transition-colors ${
-                location.pathname === '/dashboard/moduleLibrary' ? '' : ''
-              }`}>
+            <div className="relative notification-dropdown-container">
+              <button 
+                onClick={() => setShowNotifications(!showNotifications)}
+                className={`p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 relative transition-colors ${
+                  location.pathname === '/dashboard/moduleLibrary' ? '' : ''
+                }`}
+              >
                 <span className="material-symbols-outlined">notifications</span>
                 <span className="absolute top-2.5 right-2.5 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
               </button>
+              
+              {/* Notification Dropdown */}
+              {showNotifications && (
+                <div className="absolute right-0 top-full mt-2 w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 z-50 animate-fadeIn">
+                  {/* Tabs */}
+                  <div className="flex border-b border-slate-200 dark:border-slate-800">
+                    <button
+                      onClick={() => setActiveTab('notifications')}
+                      className={`flex-1 px-4 py-3 text-sm font-semibold transition-colors ${
+                        activeTab === 'notifications'
+                          ? 'text-primary border-b-2 border-primary'
+                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                      }`}
+                    >
+                      Notifications
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('calendar')}
+                      className={`flex-1 px-4 py-3 text-sm font-semibold transition-colors ${
+                        activeTab === 'calendar'
+                          ? 'text-primary border-b-2 border-primary'
+                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                      }`}
+                    >
+                      Calendar
+                    </button>
+                  </div>
+
+                  {/* Notifications Tab */}
+                  {activeTab === 'notifications' && (
+                    <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
+                      <div className="p-4">
+                        <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4">Recent</h3>
+                        <div className="space-y-3">
+                          {/* Meeting Scheduled Notification */}
+                          <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20 dark:border-primary/30 hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors cursor-pointer">
+                            <div className="flex items-start gap-3">
+                              <div className="size-10 rounded-xl bg-primary/20 dark:bg-primary/30 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-primary text-xl">event</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Meeting Scheduled</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">1:1 with your manager</p>
+                                <div className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400">
+                                  <span className="material-symbols-outlined text-xs">schedule</span>
+                                  <span>Today, 3:00 PM</span>
+                                </div>
+                              </div>
+                              <span className="material-symbols-outlined text-slate-400 text-sm">chevron_right</span>
+                            </div>
+                          </div>
+
+                          {/* Other notifications */}
+                          <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                            <div className="flex items-start gap-3">
+                              <div className="size-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-xl">check_circle</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Module Completed</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400">Welcome & Introduction</p>
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">2 hours ago</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                            <div className="flex items-start gap-3">
+                              <div className="size-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-xl">assignment</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-slate-900 dark:text-white mb-1">New Assignment</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400">Codebase Architecture review</p>
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">5 hours ago</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Calendar Tab */}
+                  {activeTab === 'calendar' && (
+                    <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
+                      <div className="p-4">
+                        <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4">Upcoming Meetings</h3>
+                        <div className="space-y-3">
+                          {/* Team Manager Meeting */}
+                          <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20 dark:border-primary/30">
+                            <div className="flex items-start gap-3 mb-3">
+                              <div className="size-10 rounded-xl bg-primary/20 dark:bg-primary/30 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-primary text-xl">person</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">1:1 with Team Manager</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400">{user.manager || 'Sarah Jenkins'}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 ml-12">
+                              <span className="material-symbols-outlined text-sm">event</span>
+                              <span>Today, Jan 25, 2025</span>
+                              <span className="mx-2">•</span>
+                              <span className="material-symbols-outlined text-sm">schedule</span>
+                              <span>3:00 PM - 3:30 PM</span>
+                            </div>
+                          </div>
+
+                          {/* HR Meeting */}
+                          <div className="p-4 bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl border border-emerald-200/50 dark:border-emerald-900/30">
+                            <div className="flex items-start gap-3 mb-3">
+                              <div className="size-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-xl">support_agent</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">HR Connect Session</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400">HR Partner</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 ml-12">
+                              <span className="material-symbols-outlined text-sm">event</span>
+                              <span>Tomorrow, Jan 26, 2025</span>
+                              <span className="mx-2">•</span>
+                              <span className="material-symbols-outlined text-sm">schedule</span>
+                              <span>2:00 PM - 2:45 PM</span>
+                            </div>
+                          </div>
+
+                          {/* Mentor Meeting */}
+                          <div className="p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border border-blue-200/50 dark:border-blue-900/30">
+                            <div className="flex items-start gap-3 mb-3">
+                              <div className="size-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-xl">school</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Mentor Session</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400">Technical Mentor</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 ml-12">
+                              <span className="material-symbols-outlined text-sm">event</span>
+                              <span>Jan 28, 2025</span>
+                              <span className="mx-2">•</span>
+                              <span className="material-symbols-outlined text-sm">schedule</span>
+                              <span>10:00 AM - 11:00 AM</span>
+                            </div>
+                          </div>
+
+                          {/* Team Lead Meeting */}
+                          <div className="p-4 bg-amber-50/50 dark:bg-amber-900/10 rounded-xl border border-amber-200/50 dark:border-amber-900/30">
+                            <div className="flex items-start gap-3 mb-3">
+                              <div className="size-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-xl">group</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Team Lead Check-in</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400">Technical Lead</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 ml-12">
+                              <span className="material-symbols-outlined text-sm">event</span>
+                              <span>Jan 30, 2025</span>
+                              <span className="mx-2">•</span>
+                              <span className="material-symbols-outlined text-sm">schedule</span>
+                              <span>4:00 PM - 4:30 PM</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Footer */}
+                  <div className="p-4 border-t border-slate-200 dark:border-slate-800">
+                    <button className="w-full py-2 text-xs font-semibold text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-lg transition-colors">
+                      View All
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-3 pl-6 border-l border-slate-200 dark:border-slate-800">
               <div className="text-right hidden md:block">

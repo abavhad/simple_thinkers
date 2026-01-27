@@ -425,6 +425,275 @@ function DashboardOverview() {
         <span className="material-symbols-outlined absolute -right-8 -bottom-8 text-[200px] text-white/5 rotate-12 select-none">route</span>
       </section>
 
+      {/* New Joiner Progress Section */}
+      <section className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-8 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary">trending_up</span>
+              Your Progress
+            </h3>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Track your growth and compare with average progress</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          {/* Current Progress */}
+          <div className="bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-5 border border-slate-200/50 dark:border-slate-800/50">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Your Progress</p>
+              <span className="material-symbols-outlined text-primary text-lg">person</span>
+            </div>
+            <p className="text-3xl font-black text-slate-900 dark:text-white mb-1">{displayProgress}%</p>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="material-symbols-outlined text-sm">arrow_upward</span>
+                +12% this week
+              </span>
+            </div>
+          </div>
+
+          {/* Average Growth Rate */}
+          <div className="bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-5 border border-slate-200/50 dark:border-slate-800/50">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Avg. Growth Rate</p>
+              <span className="material-symbols-outlined text-blue-500 text-lg">groups</span>
+            </div>
+            <p className="text-3xl font-black text-slate-900 dark:text-white mb-1">8.5%</p>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Per week</span>
+            </div>
+          </div>
+
+          {/* Comparison */}
+          <div className="bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-5 border border-slate-200/50 dark:border-slate-800/50">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Performance</p>
+              <span className="material-symbols-outlined text-emerald-500 text-lg">speed</span>
+            </div>
+            <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400 mb-1">+41%</p>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Above average</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Growth Chart */}
+        <div className="bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-6 border border-slate-200/50 dark:border-slate-800/50">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-sm font-black text-slate-900 dark:text-white tracking-tight">Progress Over Time</h4>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="size-3 rounded-full bg-primary"></div>
+                <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">Your Progress</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="size-3 rounded-full bg-slate-400 dark:bg-slate-600"></div>
+                <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">Average</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Chart Container */}
+          <div className="relative h-64">
+            <svg className="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
+              {/* Grid lines */}
+              {[0, 25, 50, 75, 100].map((y) => (
+                <line
+                  key={y}
+                  x1="40"
+                  y1={180 - (y * 1.6)}
+                  x2="760"
+                  y2={180 - (y * 1.6)}
+                  stroke="currentColor"
+                  strokeWidth="0.5"
+                  className="text-slate-200 dark:text-slate-700"
+                />
+              ))}
+
+              {/* Y-axis labels */}
+              {[0, 25, 50, 75, 100].map((y) => (
+                <text
+                  key={y}
+                  x="35"
+                  y={185 - (y * 1.6)}
+                  textAnchor="end"
+                  className="text-[10px] fill-slate-400 dark:fill-slate-500 font-semibold"
+                >
+                  {y}%
+                </text>
+              ))}
+
+              {/* X-axis labels (weeks) */}
+              {['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'].map((week, idx) => (
+                <text
+                  key={week}
+                  x={80 + idx * 170}
+                  y="195"
+                  textAnchor="middle"
+                  className="text-[10px] fill-slate-400 dark:fill-slate-500 font-semibold"
+                >
+                  {week}
+                </text>
+              ))}
+
+              {/* Average line */}
+              <polyline
+                points="80,150 250,140 420,130 590,120 760,110"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+                className="text-slate-400 dark:text-slate-600"
+              />
+
+              {/* User progress line */}
+              <polyline
+                points="80,160 250,120 420,100 590,90 760,80"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                className="text-primary"
+              />
+
+              {/* User progress area fill */}
+              <polygon
+                points="80,160 250,120 420,100 590,90 760,80 760,180 80,180"
+                fill="url(#userGradient)"
+                opacity="0.2"
+              />
+
+              {/* Average area fill */}
+              <polygon
+                points="80,150 250,140 420,130 590,120 760,110 760,180 80,180"
+                fill="url(#avgGradient)"
+                opacity="0.1"
+              />
+
+              {/* Gradient definitions */}
+              <defs>
+                <linearGradient id="userGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#005073" />
+                  <stop offset="100%" stopColor="#005073" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="avgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#64748b" />
+                  <stop offset="100%" stopColor="#64748b" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+
+              {/* Data points - User */}
+              {[
+                { x: 80, y: 160, progress: 0 },
+                { x: 250, y: 120, progress: 25 },
+                { x: 420, y: 100, progress: 38 },
+                { x: 590, y: 90, progress: 55 },
+                { x: 760, y: 80, progress: 68 }
+              ].map((point, idx) => (
+                <g key={`user-${idx}`}>
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r="5"
+                    fill="#005073"
+                    className="hover:r-7 transition-all cursor-pointer"
+                  />
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r="8"
+                    fill="#005073"
+                    opacity="0.2"
+                    className="animate-ping"
+                  />
+                </g>
+              ))}
+
+              {/* Data points - Average */}
+              {[
+                { x: 80, y: 150, progress: 10 },
+                { x: 250, y: 140, progress: 20 },
+                { x: 420, y: 130, progress: 30 },
+                { x: 590, y: 120, progress: 40 },
+                { x: 760, y: 110, progress: 50 }
+              ].map((point, idx) => (
+                <circle
+                  key={`avg-${idx}`}
+                  cx={point.x}
+                  cy={point.y}
+                  r="3"
+                  fill="#64748b"
+                  className="hover:r-5 transition-all"
+                />
+              ))}
+            </svg>
+          </div>
+
+          {/* Growth Rate Comparison */}
+          <div className="mt-6 pt-6 border-t border-slate-200/50 dark:border-slate-800/50">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Your Growth Rate</p>
+                  <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">12%</span>
+                </div>
+                <div className="w-full bg-slate-200/50 dark:bg-slate-700/50 h-2 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-primary to-emerald-500 h-full rounded-full transition-all duration-500"
+                    style={{ width: '70%' }}
+                  ></div>
+                </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 font-medium">+3.5% above average</p>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider">Average Growth Rate</p>
+                  <span className="text-lg font-black text-slate-600 dark:text-slate-400">8.5%</span>
+                </div>
+                <div className="w-full bg-slate-200/50 dark:bg-slate-700/50 h-2 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-slate-400 to-slate-500 h-full rounded-full transition-all duration-500"
+                    style={{ width: '50%' }}
+                  ></div>
+                </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 font-medium">Baseline for new joiners</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Push Metrics */}
+          <div className="mt-6 pt-6 border-t border-slate-200/50 dark:border-slate-800/50">
+            <h5 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4">Performance Insights</h5>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-emerald-50/50 dark:bg-emerald-900/10 rounded-xl p-4 border border-emerald-200/50 dark:border-emerald-900/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-sm">trending_up</span>
+                  <p className="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Momentum</p>
+                </div>
+                <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">Strong</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium">Consistent growth</p>
+              </div>
+              <div className="bg-blue-50/50 dark:bg-blue-900/10 rounded-xl p-4 border border-blue-200/50 dark:border-blue-900/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-sm">target</span>
+                  <p className="text-xs font-black text-blue-700 dark:text-blue-400 uppercase tracking-wider">Target</p>
+                </div>
+                <p className="text-lg font-black text-blue-600 dark:text-blue-400">On Track</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium">2 days ahead</p>
+              </div>
+              <div className="bg-primary/10 dark:bg-primary/20 rounded-xl p-4 border border-primary/20 dark:border-primary/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="material-symbols-outlined text-primary text-sm">rocket_launch</span>
+                  <p className="text-xs font-black text-primary uppercase tracking-wider">Push</p>
+                </div>
+                <p className="text-lg font-black text-primary">+41%</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium">Above peers</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Roadmap Timeline */}
       <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
         <div className="flex items-center justify-between mb-8">
@@ -512,20 +781,53 @@ function DashboardOverview() {
                     <div className="mb-4">
                       <p className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Modules:</p>
                       <div className="flex flex-wrap gap-2">
-                        {milestone.modules.map((module, idx) => (
-                          <span
-                            key={idx}
-                            className={`px-2.5 py-1 rounded-lg text-xs font-medium ${
-                              milestone.status === 'completed' 
-                                ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
-                                : milestone.status === 'in-progress'
-                                ? 'bg-primary/10 text-primary'
-                                : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
-                            }`}
-                          >
-                            {module}
-                          </span>
-                        ))}
+                        {milestone.modules.map((module, idx) => {
+                          const moduleIdMap = {
+                            'Codebase Architecture': 'codebase-architecture',
+                            'Dev Workflow & CI/CD': 'dev-workflow-cicd',
+                            'Welcome & Introduction': 'welcome-introduction',
+                            'Corporate Culture': 'corporate-culture',
+                            'Organization Overview': 'organization-overview',
+                            'Policies & Compliance': 'policies-compliance',
+                            'Engineering at Cisco': 'engineering-at-cisco',
+                            'MERN Foundations': 'mern-foundations',
+                            'Team Overview': 'team-overview',
+                            'First Assignment': 'first-assignment'
+                          };
+                          const moduleId = moduleIdMap[module];
+                          const isCodebaseArchitecture = module === 'Codebase Architecture';
+                          const isEngineeringAtCisco = module === 'Engineering at Cisco';
+                          const isClickable = isCodebaseArchitecture || isEngineeringAtCisco || milestone.status !== 'upcoming';
+                          
+                          return (
+                            <span
+                              key={idx}
+                              onClick={() => {
+                                if (isClickable && moduleId) {
+                                  if (module === 'Team Overview') {
+                                    navigate('/dashboard/teamResources/overview');
+                                  } else {
+                                    navigate(`/dashboard/moduleLibrary/view/${moduleId}`);
+                                  }
+                                }
+                              }}
+                              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                                milestone.status === 'completed' 
+                                  ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
+                                  : milestone.status === 'in-progress'
+                                  ? 'bg-primary/10 text-primary'
+                                  : (isCodebaseArchitecture || isEngineeringAtCisco)
+                                  ? 'bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer'
+                                  : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                              } ${isClickable ? 'cursor-pointer hover:scale-105' : 'cursor-default'}`}
+                            >
+                              {module}
+                              {(isCodebaseArchitecture || isEngineeringAtCisco) && (
+                                <span className="ml-1 material-symbols-outlined text-xs inline-block">arrow_forward</span>
+                              )}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -568,6 +870,8 @@ function DashboardOverview() {
           </div>
         </div>
       </section>
+
+      
 
       {/* Quick Resources */}
       <section>

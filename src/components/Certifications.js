@@ -14,7 +14,7 @@ function Certifications() {
         <p className="text-slate-500 text-sm">Track your early-stage progress and explore certifications when you’re ready.</p>
       </div>
 
-      <section className="mb-12">
+      {/* <section className="mb-12">
         <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">New Joiner Progress</h3>
           <span className="text-[11px] font-bold text-slate-400">STARTER VIEW</span>
@@ -47,7 +47,7 @@ function Certifications() {
             <p className="text-[11px] text-slate-500 mt-2">Goals completed this quarter</p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="mb-14">
         <div className="flex items-center justify-between mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">

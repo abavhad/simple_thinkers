@@ -1,9 +1,15 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../utils/userUtils';
 
 function ModuleLibrary() {
   const navigate = useNavigate();
   const user = getCurrentUser();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [hoveredModule, setHoveredModule] = useState(null);
+  const [expandedWeeks, setExpandedWeeks] = useState([1, 2]); // Expand first two weeks by default
 
   if (!user) {
     return null;
@@ -197,90 +203,263 @@ function ModuleLibrary() {
     }
   };
 
+  // Calculate statistics
+  const allModules = weeklySchedule.flatMap(week => week.modules);
+  const completedCount = allModules.filter(m => m.status === 'completed').length;
+  const inProgressCount = allModules.filter(m => m.status === 'in-progress').length;
+  const totalDuration = allModules.reduce((sum, m) => sum + parseInt(m.duration), 0);
+  const completedDuration = allModules
+    .filter(m => m.status === 'completed')
+    .reduce((sum, m) => sum + parseInt(m.duration), 0);
+  const overallProgress = Math.round((completedCount / allModules.length) * 100);
+
+  // Filter modules based on search, category, and status
+  const filteredSchedule = weeklySchedule.map(week => ({
+    ...week,
+    modules: week.modules.filter(module => {
+      const matchesSearch = !searchQuery || 
+        module.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        module.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || module.category === selectedCategory;
+      const matchesStatus = selectedStatus === 'all' || module.status === selectedStatus;
+      return matchesSearch && matchesCategory && matchesStatus;
+    })
+  })).filter(week => week.modules.length > 0);
+
+  const toggleWeek = (weekNumber) => {
+    setExpandedWeeks(prev => 
+      prev.includes(weekNumber) 
+        ? prev.filter(w => w !== weekNumber)
+        : [...prev, weekNumber]
+    );
+  };
+
+  const categories = ['all', ...new Set(allModules.map(m => m.category))];
+  const statuses = ['all', 'completed', 'in-progress', 'upcoming'];
+
   return (
     <div className="p-12 max-w-7xl mx-auto">
-      <div className="mb-12">
-        <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-3">Module Library</h2>
-        <p className="text-slate-500 text-base font-medium max-w-2xl">
-          Your week-by-week onboarding schedule. Complete modules in order to progress through your onboarding journey.
-        </p>
+      {/* Header with Stats */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between flex-wrap gap-6 mb-6">
+          <div>
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-3">Module Library</h2>
+            <p className="text-slate-500 text-base font-medium max-w-2xl">
+              Your week-by-week onboarding schedule. Complete modules in order to progress through your onboarding journey.
+            </p>
+          </div>
+          {/* Quick Stats */}
+          <div className="flex items-center gap-4">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-4 py-3 shadow-sm">
+              <div className="text-2xl font-bold text-primary">{overallProgress}%</div>
+              <div className="text-xs text-slate-500">Complete</div>
+            </div>
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-4 py-3 shadow-sm">
+              <div className="text-2xl font-bold text-emerald-600">{completedCount}</div>
+              <div className="text-xs text-slate-500">Completed</div>
+            </div>
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-4 py-3 shadow-sm">
+              <div className="text-2xl font-bold text-primary">{inProgressCount}</div>
+              <div className="text-xs text-slate-500">In Progress</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Search and Filters */}
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Search */}
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+              <input
+                type="text"
+                placeholder="Search modules..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              />
+            </div>
+
+            {/* Category Filter */}
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">category</span>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
+              >
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat === 'all' ? 'All Categories' : cat}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Status Filter */}
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">filter_list</span>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
+              >
+                {statuses.map(status => (
+                  <option key={status} value={status}>
+                    {status === 'all' ? 'All Status' : status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Active Filters Display */}
+          {(searchQuery || selectedCategory !== 'all' || selectedStatus !== 'all') && (
+            <div className="mt-4 flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-slate-500">Active filters:</span>
+              {searchQuery && (
+                <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded flex items-center gap-1">
+                  Search: "{searchQuery}"
+                  <button onClick={() => setSearchQuery('')} className="hover:bg-primary/20 rounded">
+                    <span className="material-symbols-outlined text-xs">close</span>
+                  </button>
+                </span>
+              )}
+              {selectedCategory !== 'all' && (
+                <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded flex items-center gap-1">
+                  {selectedCategory}
+                  <button onClick={() => setSelectedCategory('all')} className="hover:bg-primary/20 rounded">
+                    <span className="material-symbols-outlined text-xs">close</span>
+                  </button>
+                </span>
+              )}
+              {selectedStatus !== 'all' && (
+                <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded flex items-center gap-1">
+                  {selectedStatus}
+                  <button onClick={() => setSelectedStatus('all')} className="hover:bg-primary/20 rounded">
+                    <span className="material-symbols-outlined text-xs">close</span>
+                  </button>
+                </span>
+              )}
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                  setSelectedStatus('all');
+                }}
+                className="text-xs text-slate-500 hover:text-primary font-medium"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Week-by-Week Schedule */}
       <div className="space-y-8">
-        {weeklySchedule.map((week, weekIndex) => (
-          <section key={week.week} className="mb-12">
-            {/* Week Header */}
-            <div className={`mb-6 p-6 rounded-xl border-2 ${
-              week.status === 'completed' 
-                ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-900/50' 
-                : week.status === 'in-progress'
-                ? 'bg-primary/5 border-primary/30 shadow-lg shadow-primary/5'
-                : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700'
-            }`}>
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex items-center gap-4">
-                  <div className={`size-12 rounded-xl flex items-center justify-center ${
-                    week.status === 'completed' 
-                      ? 'bg-emerald-500 text-white' 
-                      : week.status === 'in-progress'
-                      ? 'bg-primary text-white'
-                      : 'bg-slate-300 dark:bg-slate-700 text-slate-500'
-                  }`}>
-                    <span className="material-symbols-outlined text-2xl font-bold">
-                      {week.status === 'completed' ? 'check_circle' : 'calendar_month'}
+        {filteredSchedule.map((week, weekIndex) => {
+          const isExpanded = expandedWeeks.includes(week.week);
+          return (
+            <section key={week.week} className="mb-12 animate-fadeIn">
+              {/* Week Header - Clickable to expand/collapse */}
+              <div 
+                onClick={() => toggleWeek(week.week)}
+                className={`mb-6 p-6 rounded-xl border-2 cursor-pointer transition-all hover:shadow-lg ${
+                  week.status === 'completed' 
+                    ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-900/50 hover:border-emerald-300' 
+                    : week.status === 'in-progress'
+                    ? 'bg-primary/5 border-primary/30 shadow-lg shadow-primary/5 hover:border-primary/50'
+                    : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className={`size-12 rounded-xl flex items-center justify-center transition-all ${
+                      week.status === 'completed' 
+                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30' 
+                        : week.status === 'in-progress'
+                        ? 'bg-primary text-white shadow-lg shadow-primary/30 animate-pulse'
+                        : 'bg-slate-300 dark:bg-slate-700 text-slate-500'
+                    }`}>
+                      <span className="material-symbols-outlined text-2xl font-bold">
+                        {week.status === 'completed' ? 'check_circle' : 'calendar_month'}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1 flex-wrap">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                          {week.title}
+                        </h3>
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase transition-all ${getStatusBadge(week.status)}`}>
+                          {getStatusText(week.status)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 flex-wrap">
+                        <span className="font-medium">{week.dateRange}</span>
+                        <span>•</span>
+                        <span className="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-xs font-bold uppercase">
+                          {week.phase}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">
+                        {week.modules.length} Module{week.modules.length !== 1 ? 's' : ''}
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        {week.modules.reduce((total, m) => total + parseInt(m.duration), 0)} min total
+                      </p>
+                    </div>
+                    <span className={`material-symbols-outlined text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+                      expand_more
                     </span>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                        {week.title}
-                      </h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${getStatusBadge(week.status)}`}>
-                        {getStatusText(week.status)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                      <span className="font-medium">{week.dateRange}</span>
-                      <span>•</span>
-                      <span className="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-xs font-bold uppercase">
-                        {week.phase}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-slate-900 dark:text-white">
-                    {week.modules.length} Module{week.modules.length !== 1 ? 's' : ''}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {week.modules.reduce((total, m) => total + parseInt(m.duration), 0)} min total
-                  </p>
                 </div>
               </div>
-            </div>
 
-            {/* Modules Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Modules Grid - Animated expand/collapse */}
+            <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-300 overflow-hidden ${
+              isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+            }`}>
               {week.modules.map((module, moduleIndex) => {
-                const isClickable = module.status !== 'upcoming' || week.status === 'in-progress';
+                // Team Overview, Codebase Architecture, and Engineering at Cisco are always clickable
+                const isTeamOverview = module.id === 'team-overview';
+                const isCodebaseArchitecture = module.id === 'codebase-architecture';
+                const isEngineeringAtCisco = module.id === 'engineering-at-cisco';
+                const isSpecialModule = isTeamOverview || isCodebaseArchitecture || isEngineeringAtCisco;
+                const isClickable = isSpecialModule || module.status !== 'upcoming' || week.status === 'in-progress';
+                
                 return (
                   <div
                     key={module.id}
                     onClick={() => {
                       if (isClickable && module.id) {
-                        navigate(`/dashboard/moduleLibrary/view/${module.id}`);
+                        if (isTeamOverview) {
+                          navigate('/dashboard/teamResources/overview');
+                        } else {
+                          navigate(`/dashboard/moduleLibrary/view/${module.id}`);
+                        }
                       }
                     }}
-                    className={`module-card bg-white dark:bg-slate-900 p-6 rounded-xl border-2 transition-all ${
+                    onMouseEnter={() => setHoveredModule(`${week.week}-${module.id}`)}
+                    onMouseLeave={() => setHoveredModule(null)}
+                    className={`module-card bg-white dark:bg-slate-900 p-6 rounded-xl border-2 transition-all duration-300 ${
                       module.status === 'completed'
-                        ? 'border-emerald-200 dark:border-emerald-900/50 shadow-sm'
+                        ? 'border-emerald-200 dark:border-emerald-900/50 shadow-sm hover:shadow-md'
                         : module.status === 'in-progress'
-                        ? 'border-primary/30 shadow-lg shadow-primary/5'
+                        ? 'border-primary/30 shadow-lg shadow-primary/5 hover:shadow-xl hover:shadow-primary/10'
+                        : isSpecialModule
+                        ? 'border-primary/20 shadow-lg shadow-primary/5 hover:border-primary/40 hover:shadow-xl'
                         : 'border-slate-200 dark:border-slate-700 opacity-75'
                     } ${
-                      isClickable ? 'cursor-pointer hover:shadow-md' : 'cursor-not-allowed'
+                      isClickable ? 'cursor-pointer hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1' : 'cursor-not-allowed'
+                    } ${isSpecialModule ? 'ring-2 ring-primary/10 hover:ring-primary/30' : ''} ${
+                      hoveredModule === `${week.week}-${module.id}` ? 'z-10' : ''
                     }`}
+                    style={{
+                      animationDelay: `${moduleIndex * 50}ms`
+                    }}
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className={`size-12 rounded-xl flex items-center justify-center ${
@@ -317,14 +496,19 @@ function ModuleLibrary() {
                             </div>
                           </div>
                         )}
-                        {module.status === 'upcoming' && (
+                        {module.status === 'upcoming' && !isSpecialModule && (
                           <span className="material-symbols-outlined text-slate-300 text-xl">lock</span>
                         )}
                       </div>
                     </div>
 
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-tight">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-tight flex items-center gap-2">
                       {module.title}
+                      {isSpecialModule && (
+                        <span className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[9px] font-bold uppercase">
+                          {isCodebaseArchitecture ? 'Interactive' : isEngineeringAtCisco ? 'Available' : 'Featured'}
+                        </span>
+                      )}
                     </h4>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
                       {module.description}
@@ -336,13 +520,20 @@ function ModuleLibrary() {
                           <span className="material-symbols-outlined text-sm">schedule</span>
                           {module.duration}
                         </span>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${getStatusBadge(module.status)}`}>
-                          {getStatusText(module.status)}
-                        </span>
+                        {isSpecialModule ? (
+                          <span className="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold uppercase">
+                            Available Now
+                          </span>
+                        ) : (
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${getStatusBadge(module.status)}`}>
+                            {getStatusText(module.status)}
+                          </span>
+                        )}
                       </div>
-                      {module.status === 'in-progress' && (
-                        <button className="text-xs font-bold text-primary hover:underline">
-                          Continue →
+                      {(module.status === 'in-progress' || isSpecialModule) && (
+                        <button className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                          {isTeamOverview ? 'Explore Team' : isCodebaseArchitecture ? 'View Structure' : isEngineeringAtCisco ? 'Start Learning' : 'Continue'}
+                          <span className="material-symbols-outlined text-xs">arrow_forward</span>
                         </button>
                       )}
                     </div>
@@ -351,9 +542,21 @@ function ModuleLibrary() {
                       <div className="mt-4">
                         <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
                           <div
-                            className="bg-primary h-full rounded-full transition-all"
+                            className="bg-primary h-full rounded-full transition-all relative overflow-hidden"
                             style={{ width: `${module.progress}%` }}
-                          ></div>
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Hover Preview */}
+                    {hoveredModule === `${week.week}-${module.id}` && isClickable && (
+                      <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 animate-fadeIn">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-slate-500">Click to {isTeamOverview ? 'explore team' : isCodebaseArchitecture ? 'view structure' : isEngineeringAtCisco ? 'start learning' : 'view module'}</span>
+                          <span className="material-symbols-outlined text-primary text-sm animate-bounce">arrow_forward</span>
                         </div>
                       </div>
                     )}
@@ -361,9 +564,29 @@ function ModuleLibrary() {
                 );
               })}
             </div>
-          </section>
-        ))}
+            </section>
+          );
+        })}
       </div>
+
+      {/* Empty State */}
+      {filteredSchedule.length === 0 && (
+        <div className="text-center py-16">
+          <span className="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-700 mb-4">search_off</span>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No modules found</h3>
+          <p className="text-slate-500 mb-4">Try adjusting your filters or search query</p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setSelectedCategory('all');
+              setSelectedStatus('all');
+            }}
+            className="px-4 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:bg-primary/90 transition-colors"
+          >
+            Clear Filters
+          </button>
+        </div>
+      )}
     </div>
   );
 }
